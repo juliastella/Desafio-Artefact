@@ -1,8 +1,8 @@
 # Ambiente virtual
 .venv/
-env/
 
 # variaveis ambeinete
+env/
 .env
 .env.*
 

@@ -8,7 +8,7 @@ from src.data_loader import produtos_df, texto_politicas
 st.set_page_config(page_title="Empório da Música")
 st.title("🎵 Atendimento - Empório da Música")
 
-# Inicializa o cliente da API
+# Inicializa o cliente da API de forma segura via variável de ambiente
 client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 
 # Ferramenta para o modelo (Function Calling)
@@ -47,10 +47,10 @@ if pergunta:
     st.session_state.messages.append({"role": "user", "text": pergunta})
     
     try:
-        # Chama o modelo no modo streaming
+        # Chama o modelo no modo streaming dentro do bloco protegido
         resposta_stream = st.session_state.chat_session.send_message_stream(pergunta)
         
-	with st.chat_message("assistant"):
+        with st.chat_message("assistant"):
             # Filtro para lidar com chunks vazios do Function Calling
             def extrair_texto(stream_response):
                 for chunk in stream_response:
