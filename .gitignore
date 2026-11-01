@@ -2,6 +2,10 @@
 .venv/
 env/
 
+# variaveis ambeinete
+.env
+.env.*
+
 # Sistema e Python
 __pycache__/
 *.py[cod]
