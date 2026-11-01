@@ -1,39 +1,48 @@
-# 🎵 Atendimento Inteligente - Empório da Música
+# 🎵 Intelligent Customer Support - Empório da Música
 
-Protótipo de agente conversacional de atendimento ao cliente desenvolvido para a loja **Empório da Música**. O sistema integra de forma híbrida **dados tabulares (CSV)** via *Function Calling* e **documentos de políticas (PDF)** utilizando a API oficial do Google Gemini, tudo encapsulado em uma interface gráfica interativa desenvolvida em **Streamlit**.
-
----
-
-## 💡 Sobre o Projeto e Arquitetura
-
-Este projeto foi desenvolvido com foco em agilidade, robustez e simplicidade para atender a um escopo de entrega rápida (Sprint de 12 horas). 
-
-### Por que escolhemos esta Stack?
-* **Google Gemini API:** Utilizado pelo seu suporte nativo e eficiente a *Function Calling*, além de uma ampla janela de contexto que permite injetar regras de negócio diretamente nas instruções de sistema.
-* **Pandas e PyPDF2:** Optamos por carregar o catálogo de produtos (`products.csv`) diretamente em memória utilizando o **Pandas** e as políticas institucionais (`políticas_da_loja.pdf`) via **PyPDF2**, eliminando a necessidade de configurar bancos de dados externos pesados e mantendo a latência extremamente baixa.
-* **Streamlit:** Permite construir uma interface de chat completa em Python puro, dispensando a complexidade de rotas, configuração de CORS e gerenciamento de estado de um front-end em React.
+A conversational AI customer support prototype developed for **Empório da Música**. The system uses a hybrid architecture to integrate **tabular data (CSV)** through *Function Calling* and **policy documents (PDF)** using the official Google Gemini API. Everything is integrated into an interactive graphical interface built with **Streamlit**.
 
 ---
 
-## ⚙️ Configurações para Levantar o Projeto
+## 💡 Project Overview and Architecture
 
-### 1. Clonar o Repositório e Configurar o Ambiente Virtual (venv)
-Abra o seu terminal na pasta do projeto e crie um ambiente virtual isolado para gerenciar as dependências do Python:
+This project was developed with a focus on speed, reliability, and simplicity to meet a short delivery timeline (12-hour sprint).
+
+### Why We Chose This Tech Stack
+
+- **Google Gemini API:** Selected for its native and efficient support for *Function Calling*, as well as its large context window, which allows business rules to be injected directly into the system instructions.
+
+- **Pandas and PyPDF2:** We chose to load the product catalog (`products.csv`) directly into memory using **Pandas** and extract the store policies from (`politicas_da_loja.pdf`) using **PyPDF2**. This eliminated the need to configure resource-intensive external databases while keeping response latency low.
+
+- **Streamlit:** Allows us to build a fully functional chat interface using Python alone, avoiding the complexity of routing, CORS configuration, and state management typically associated with a React-based frontend.
+
+---
+
+## ⚙️ Project Setup
+
+### 1. Clone the Repository and Set Up the Virtual Environment (venv)
+
+Open your terminal in the project directory and create an isolated virtual environment to manage Python dependencies:
 
 ```bash
 python3 -m venv .venv
-source .venv/bin/activate  # No Windows (PowerShell): .venv\Scripts\activate
+source .venv/bin/activate
+
+# On Windows (PowerShell):
+# .venv\Scripts\activate
 ```
 
-### 2. Instalação das Dependências
-Para garantir que o SDK moderno do Google GenAI, o Streamlit, o Pandas e o leitor de PDF estejam disponíveis, execute os comandos de instalação:
+### 2. Install Dependencies
+
+To ensure the Google GenAI SDK, Streamlit, Pandas, and PDF processing library are available, run the following installation commands:
 
 ```bash
 pip install -U google-genai
 pip install streamlit pypdf2 pandas
 ```
 
-*(Opcional - Desenvolvimento CLI)*: Se desejar instalar as ferramentas de suporte do Google AI Studio para o seu terminal, você pode executar o script de instalação oficial:
+**(Optional - CLI Development):** If you want to install Google's AI Studio CLI support tools in your terminal, you can run the official installation script:
+
 ```bash
 curl -fsSL https://raw.githubusercontent.com/google-gemini/gemini-api-cli/main/scripts/install.sh | bash
 export PATH="$PATH:$HOME/.local/bin"
@@ -41,36 +50,41 @@ export PATH="$PATH:$HOME/.local/bin"
 
 ---
 
-## 🔑 Configuração do Google AI Studio e Chave de API
+## 🔑 Google AI Studio Setup and API Key Configuration
 
-Para que o agente consiga se comunicar com os modelos de IA, você precisará de uma chave de acesso oficial:
+To enable the agent to communicate with AI models, you will need an official API key:
 
-1. Acesse o [Google AI Studio](https://aistudio.google.com/) e faça login com sua conta do Google.
-2. No painel principal, clique em **"Get API key"** (ou vá até a seção de chaves) para gerar uma nova credencial gratuita. Ela será gerada no formato padrão iniciando com o prefixo `AIza...`.
-3. **Segurança de Credenciais:** Nunca cole sua chave de API diretamente no código-fonte. Armazene-a de forma segura como uma variável de ambiente no seu terminal antes de executar o projeto:
+1. Visit [Google AI Studio](https://aistudio.google.com/) and sign in with your Google account.
+2. On the main dashboard, click **"Get API key"** (or navigate to the API keys section) to generate a new free API key. It follows the standard format and typically starts with the `AIza...` prefix.
+3. **Credential Security:** Never hardcode your API key directly into the source code. Store it securely as an environment variable in your terminal before running the application.
 
-* **No Linux / macOS:**
-  ```bash
-  export GEMINI_API_KEY="sua_chave_aqui_comecando_com_aiza"
-  ```
-* **No Windows (PowerShell):**
-  ```powershell
-  $env:GEMINI_API_KEY="sua_chave_aqui_comecando_com_aiza"
-  ```
+**Linux / macOS:**
 
-No código da aplicação (`app.py`), o cliente da API busca essa variável de ambiente de forma segura utilizando o seguinte trecho:
+```bash
+export GEMINI_API_KEY="your_api_key_starting_with_aiza"
+```
+
+**Windows (PowerShell):**
+
+```powershell
+$env:GEMINI_API_KEY="your_api_key_starting_with_aiza"
+```
+
+In the application code (`app.py`), the API client securely retrieves this environment variable using the following code:
+
 ```python
 import os
 from google import genai
 
-# Inicializa o cliente buscando a chave do ambiente
+# Initialize the client using the environment variable
 client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 ```
 
-Posteriormente, o modelo selecionado (como o `gemini-3.1-flash-lite`) é configurado juntamente com as ferramentas de *Function Calling* e as instruções de sistema:
+Next, the selected model (such as `gemini-3.1-flash-lite`) is configured along with the *Function Calling* tools and system instructions:
+
 ```python
 st.session_state.chat_session = client.chats.create(
-    model="gemini-3.1-flash-lite", 
+    model="gemini-3.1-flash-lite",
     config=types.GenerateContentConfig(
         system_instruction=instrucoes,
         tools=[consultar_produto],
@@ -81,18 +95,25 @@ st.session_state.chat_session = client.chats.create(
 
 ---
 
-## 🚀 Executando a Interface Gráfica
+## 🚀 Running the Application
 
-Com o ambiente virtual ativado, as dependências instaladas e a variável de ambiente `GEMINI_API_KEY` devidamente configurada no seu terminal, inicie a aplicação através do Streamlit:
+Once the virtual environment is activated, dependencies are installed, and the `GEMINI_API_KEY` environment variable is properly configured in your terminal, start the application using Streamlit:
 
 ```bash
 streamlit run app.py
 ```
 
-O Streamlit irá compilar o script e abrir automaticamente uma aba no seu navegador web padrão no endereço local: **`http://localhost:8501`**.
+Streamlit will execute the script and automatically open a new tab in your default web browser at the following local address:
+
+**http://localhost:8501**
 
 ---
 
-## 📝 Próximos Passos (Evolução com Mais Tempo)
-* Integração completa das tabelas relacionais restantes (`customers.csv`, `orders.csv`, `order_items.csv`) para análise de perfil e histórico de compras dos clientes.
-* Implementação de banco de dados vetorial (como ChromaDB) para indexação escalável de bases documentais extensas.
+## 📝 Future Improvements (With Additional Development Time)
+
+- Integrate the remaining relational datasets (`customers.csv`, `orders.csv`, and `order_items.csv`) to support customer profiling and purchase history analysis.
+- Implement a vector database (such as ChromaDB) to enable scalable indexing and retrieval across larger document collections.
+
+### 📚 Technical Documentation
+
+For a detailed explanation of the project's architecture, technical decisions, and the rationale behind the technologies and implementation approaches, please refer to **[Architectural Decisions.pdf](Architectural%20Decisions.pdf)**, included in this repository.
