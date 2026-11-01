@@ -1,11 +1,11 @@
 
-Etapa 1: Git e Ambiente
+Etapa 1: Git e Ambiente 
 
- - um arquivo requirements.txt: contendo pandas, streamlit, google-generativeai e PyPDF2. 
+ - um arquivo requirements.txt: contendo pandas, streamlit, google-generativeai e PyPDF2. x
 
 Etapa 2: Tratamento de Dados
 
-- Criação do  data_loader.py. 
+- Criação do  data_loader.py. X
 - Crregamento os CSVs e aplique um .dropna() ou .fillna(0) estritamente nas colunas críticas como preço, estoque e ID. 
 - Extração do texto do PDF de políticas da loja para uma variável de texto simples em memória para estruturar o RAG.
 

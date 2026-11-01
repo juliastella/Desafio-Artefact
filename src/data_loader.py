@@ -1,26 +1,32 @@
 import pandas as pd
+import os
+import PyPDF2
 
-# 1. Carregamento dos dados em memória
-# customers = pd.read_csv('customers.csv')
-# products = pd.read_csv('products.csv')
-# orders = pd.read_csv('orders.csv')
-# order_items = pd.read_csv('order_items.csv')
-# categories = pd.read_csv('categories.csv')
+caminho_atual = os.path.dirname(os.path.abspath(__file__))
+base_dir = os.path.join(caminho_atual, '..', 'data')
 
-# 2. Tratamento rápido de nulos nas colunas críticas
-# Ajuste 'preco' e 'estoque' para os nomes reais das colunas no seu CSV
-products['preco'] = products['preco'].fillna(0) 
-products['estoque'] = products['estoque'].fillna(0)
+# 1. Declara a variável produtos_df
+caminho_produtos = os.path.join(base_dir, 'desafio_tecnico_ai_eng - products.csv')
+produtos_df = pd.read_csv(caminho_produtos)
 
-# 3. Conexões (Merges) baseadas nas chaves primárias
-# Une os itens aos pedidos
-df_pedidos = pd.merge(orders, order_items, on='order_id', how='inner')
+if 'preco' in produtos_df.columns and 'estoque' in produtos_df.columns:
+    produtos_df['preco'] = produtos_df['preco'].fillna(0)
+    produtos_df['estoque'] = produtos_df['estoque'].fillna(0)
+elif 'price' in produtos_df.columns and 'stock' in produtos_df.columns:
+    produtos_df['price'] = produtos_df['price'].fillna(0)
+    produtos_df['stock'] = produtos_df['stock'].fillna(0)
 
-# Adiciona os detalhes dos produtos e categorias
-df_vendas = pd.merge(df_pedidos, products, on='product_id', how='left')
-df_vendas = pd.merge(df_vendas, categories, on='category_id', how='left')
+# 2. Declara a variável texto_politicas
+def carregar_politicas():
+    caminho_pdf = os.path.join(base_dir, 'políticas_da_loja.pdf')
+    texto = ""
+    try:
+        with open(caminho_pdf, "rb") as f:
+            leitor = PyPDF2.PdfReader(f)
+            for pagina in leitor.pages:
+                texto += pagina.extract_text()
+        return texto
+    except Exception:
+        return "Políticas não encontradas."
 
-# Consolida com os dados dos clientes
-df_completo = pd.merge(df_vendas, customers, on='customer_id', how='left')
-
-print(df_completo.head())
+texto_politicas = carregar_politicas()
