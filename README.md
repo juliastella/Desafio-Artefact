@@ -1,3 +1,5 @@
+**Júlia Stella Silva de Paula - Full-Stack Developer | AI Software Engineer**
+
 # 🎵 Intelligent Customer Support - Empório da Música
 
 A conversational AI customer support prototype developed for **Empório da Música**. The system uses a hybrid architecture to integrate **tabular data (CSV)** through *Function Calling* and **policy documents (PDF)** using the official Google Gemini API. Everything is integrated into an interactive graphical interface built with **Streamlit**.
