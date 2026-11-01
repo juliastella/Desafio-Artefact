@@ -1,0 +1,3 @@
+- ligação com o google api cli
+- criação dos arquivos principais
+- configuração do env python e instalação do panda

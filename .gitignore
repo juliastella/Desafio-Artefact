@@ -1,0 +1,9 @@
+# Ambiente virtual
+.venv/
+venv/
+env/
+
+# Credenciais e variáveis de ambiente
+.chave.py
+.env
+
