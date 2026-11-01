@@ -1,3 +1,5 @@
+import os
+
 import streamlit as st
 from google import genai
 from google.genai import types
@@ -6,7 +8,6 @@ from src.data_loader import produtos_df, texto_politicas
 st.set_page_config(page_title="Empório da Música")
 st.title("🎵 Atendimento - Empório da Música")
 
-# Inicializa o cliente da API
 # Inicializa o cliente da API
 client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 
@@ -45,11 +46,30 @@ if pergunta:
     st.chat_message("user").write(pergunta)
     st.session_state.messages.append({"role": "user", "text": pergunta})
     
-    # Chama o modelo no modo streaming e cria um gerador de texto
-    resposta_stream = st.session_state.chat_session.send_message_stream(pergunta)
-    
-    # O Streamlit renderiza as palavras em tempo real e captura o texto final
-    with st.chat_message("assistant"):
-        texto_final = st.write_stream((chunk.text for chunk in resposta_stream))
+    try:
+        # Chama o modelo no modo streaming
+        resposta_stream = st.session_state.chat_session.send_message_stream(pergunta)
         
-    st.session_state.messages.append({"role": "assistant", "text": texto_final})
+	with st.chat_message("assistant"):
+            # Filtro para lidar com chunks vazios do Function Calling
+            def extrair_texto(stream_response):
+                for chunk in stream_response:
+                    if chunk.parts:
+                        for part in chunk.parts:
+                            if hasattr(part, 'text') and part.text:
+                                yield part.text
+
+            # Renderiza na tela em tempo real
+            texto_final = st.write_stream(extrair_texto(resposta_stream))
+
+        # Salva no histórico
+        st.session_state.messages.append({
+            "role": "assistant",
+            "text": texto_final
+        })
+
+    except Exception as e:
+        st.error(
+            "Nossos servidores estão com alta demanda momentânea. "
+            "Por favor, tente novamente em alguns segundos."
+        )

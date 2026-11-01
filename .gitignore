@@ -1,9 +1,8 @@
 # Ambiente virtual
 .venv/
-venv/
 env/
 
-# Credenciais e variáveis de ambiente
-.chave.py
-.env
-
+# Sistema e Python
+__pycache__/
+*.py[cod]
+.DS_Store
